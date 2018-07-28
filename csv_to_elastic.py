@@ -115,6 +115,8 @@ def main(file_path, delimiter, max_rows, elastic_index, json_struct, datetime_fi
                     else:
                         try:
                             int(row[pos])
+                            if _data.find('"_%' + header + '%_"') != -1:
+                                _data = _data.replace('_%' + header + '%_', row[pos])
                             _data = _data.replace('"%' + header + '%"', row[pos])
                         except ValueError:
                             _data = _data.replace('%' + header + '%', row[pos])
@@ -168,7 +170,7 @@ def send_to_elastic(elastic_address, endpoint, ssl, username, password, to_elast
     else:
 
         if response_details['errors']:
-            line=1 # skip header 
+            line=1 # skip header
             for i in response_details['items']:
                 line=line+1
                 if i['index']['status'] != 201:
